@@ -1,4 +1,3 @@
-/recipes-gnokii/files/gnokii/
 .*
 !.gitignore
 *.swp
