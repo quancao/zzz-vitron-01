@@ -1,0 +1,191 @@
+GNOKII FAQ
+Pawel Kot, gnokii@gmail.com
+Hugh Blemings, hugh@blemings.org
+
+-------------------------------------------------------------------------------
+Q. What is gnokii?
+
+A. It is the name of a project that aims to develop tools and drivers for
+   the mobile phones and modems. These tools include modem drivers, console
+   tools, GUI applications etc. All software that forms part of the project
+   is released under the GNU General Public License.  Please see the COPYING
+   file for more details on license/copying issues, the lack of warranty
+   and where to send a postcard if you like gnokii :-)  Gnokii is designed
+   to work on a variety of operating systems (Linux, FreeBSD, MacOS X,
+   Windows, etc.) and hardware platforms (PPC, Intel, etc.)
+
+-------------------------------------------------------------------------------
+Q. How do you pronounce gnokii?
+
+A. You can pronounce gnokii as "gnooki" or "gnocki" as you prefer :-)  Note,
+   that there's already a gnocky project, a gtk2 frontend to gnokii, so keep
+   it in mind to be able to distinct them.
+
+-------------------------------------------------------------------------------
+Q. What models are supported?
+
+A. You can assume that your phone is supported, however there are rare cases
+   that you will get very limited functionality with gnokii. If you have a
+   fairly modern phone you should use the following model setting in your
+   config file:
+    - model = series40, if you have Nokia non-Symbian Series60 phone,
+    - model = gnapplet, if you have Nokia Symbian Series60 prior to 3rd
+    Edition phone,
+    - model = AT, for all other.
+   If you have some older Nokia (like 6210) phone you may try using its
+   brand name, eg. model = 6210.
+   See also our <http://wiki.gnokii.org/index.php/Config> for configurations
+   known to work.
+
+   Symbian series60 3rd edition (most Nokia n and e series) are not
+   supported by gnapplet driver due to changes in Symbian API. For now you
+   can get some functionality using AT driver.
+   
+   gnokii will not work with iPhones, Windows Mobile phones, BlackBerries
+   and most likely Androids. You can try using AT driver for that purpose
+   but expected results are miserable.
+
+-------------------------------------------------------------------------------
+Q. I get "Hmmm... GSM_LinkOK never went true. Quitting." message when
+   running gnokii. What's wrong?
+
+A. Gnokii cannot connect to the phone. Possible reasons are:
+    - wrong serial port is defined in gnokii config file,
+    - you are using the wrong cable,
+    - you are using not supported phone model,
+    - you don't have permission to write to /dev/ttySX device.
+
+-------------------------------------------------------------------------------
+Q. Does mgnokiidev need to be suid root?
+
+A. Yes. gnokiid needs to create a symbolic link in the /dev directory.
+   mgnokiidev is the program which does this and hence it must be suid
+   root so it can write to the directory. mgnokiidev is executable only
+   for gnokii group members (and root) so it presents a minimal security
+   risk.
+   
+   Be sure that you don't use a version of gnokii older than 0.3.5
+   if you want to install mkgnokiidev suid root and give the access for
+   execution for untrusted users. Earlier versions had security
+   problems and allowed people to write to an arbitrary file.
+
+-------------------------------------------------------------------------------
+Q. Should any other gnokii binary be installed suid root?
+
+A. No. There is no need. gnokii isn't intended for setuid/setgid operation.
+   If you set the setuid/setgid bit, you're taking a huge security
+   risk. All you need is read/write permission for the device you are using
+   for connection (port option in the config file). You can safely do it
+   using groups management.
+
+-------------------------------------------------------------------------------
+Q. I'd like to send/receive sms, to handle voice calls, etc from my own
+   application. What should I do?
+
+A. If the license of your application is GPL the easiest solution is to
+   use libgnokii. In this case you needn't to handle low level stuff,
+   libgnokii will do it for you. If you want to use a scripting language,
+   you can choose between Perl, PHP and Ruby.
+
+   First version of Perl bindings was prepared by Konstantin Agouros and is
+   available at:
+
+     http://www.agouros.de/gnokii
+
+   Please note that this version does not work with current version. The
+   up-do-date version was prepared by H. Merijn Brand and is available at:
+
+     http://repo.or.cz/w/GSM-Gnokii.git
+
+   PHP bindings were prepared by Daniele Forsi and are available at:
+
+     git://git.savannah.nongnu.org/gnokii/gnokii-extras.git
+
+   Ruby bindings were prepared by Thyagarajan Shanmugham and are available at:
+
+     http://github.com/thyagarajan/rubynokii/wikis/home
+
+-------------------------------------------------------------------------------
+Q. Can I get a copy of the protocol for the <insert phone model here>?
+
+A. We don't have any formal documentation of the protocols in use.
+
+   Since we get this request once a week on average we'll repeat the answer
+   here... :)
+
+   We don't have any formal documentation of the protocols in use.
+
+   The best source we can offer is the knowledge assembled by Nagy Balazs
+   and Marcin Wiacek. You can find result of their work in Docs/protocol/
+   subdirectory in gnokii sources. Note that not all known protocol functions
+   are implemented in gnokii.
+
+   There's a good introduction to FBUS:
+       http://www.embedtronics.com/nokia/fbus.html
+
+-------------------------------------------------------------------------------
+Q. Which cable for the Nokia phones should I use?
+
+A. Please refer to the vendor website. They always have the most accurate
+   information.
+
+-------------------------------------------------------------------------------
+Q. My phone is not mentioned as supported by gnokii, but it seems that it is
+   similar to the one of the mentioned in the supported phones list? What
+   should I do to check this out?
+
+A. It is quite simple. If you use AT compatible phone you can just use
+   'model = AT' in the config file. If you have Nokia and you would like to
+   enable FBUS mode (it has more facilities then AT mode), there are few
+   things you should do.
+
+   For modern Nokias you can have either series40 or series60 phone. You can
+   check this information at http://www.forum.nokia.com/Devices/.
+   If you have series60 you are unlucky. You need to stick to AT driver. If you
+   have series40 you may just try to run gnokii. If it doesn't work you may try
+   adding the following section to the config file:
+   
+   [flags]
+   RM-443=6303, PM_DEFAULT_S40_30
+
+   The flags are explained in the sample config file. You can choose the right
+   flags by comparing the OS version with the models configured in
+   common/misc.c already.
+   
+-------------------------------------------------------------------------------
+Q. I'm using the Win32 gnokii distribution and got the error "Couldn't open
+   FBUS device". What's wrong?
+
+A. Make sure that you put in the config file "port = com1:", not
+   "port = :com1".
+
+-------------------------------------------------------------------------------
+Q. How do I enable debug output?
+
+A. Place the new section in your config file (or update existing section in
+   a similar way):
+
+   [logging]
+   debug = on
+
+-------------------------------------------------------------------------------
+Q. Please help me configure my Nokia eXX/nYY to work with gnokii.
+
+A. Nokia e and n series are Symbian Series60 3rd Edition based. Our gnapplet
+   driver is not compatible with this OS (yet). You can get limited
+   functionality (due to Symbian limitation) by using AT driver.
+
+-------------------------------------------------------------------------------
+Q. Why bluetooth connection under Windows does not work?
+
+A. gnokii supports only MS bluetooth stack on Windows. Make sure you use it.
+
+-------------------------------------------------------------------------------
+Q. Where gnokii config file is located?
+
+A. As of gnokii 0.6.30 the primary locations where the config files are
+   searched is:
+     Windows: %APPDATA%\gnokii\gnokii.ini
+     MacOS X: $HOME/Library/Preferences/gnokii/config
+     Everything else: $XDG_CONFIG_HOME/gnokii/config or
+       $HOME/.config/gnokii/config

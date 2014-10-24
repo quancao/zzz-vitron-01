@@ -1,0 +1,2 @@
+../gnokii/configure --disable-nls --disable-mysql --disable-libusb
+
