@@ -11,10 +11,12 @@ FILES_${PN} = "${libdir} ${bindir} ${sbindir}"
 
 inherit autotools gettext
 
-EXTRA_OECONF = " --disable-nls --disable-mysql --disable-libusb"
+EXTRA_OECONF_append = " --disable-nls --disable-mysql --disable-libusb"
 
 do_configure_prepend() {
-    sh ${S}/autogen.sh
+    if [ ! -f ${S}/configure ]; then
+       sh ${S}/autogen.sh
+    fi
     mv -f ${S}/configure.ac ${S}/configure.ac.old
 }
 
