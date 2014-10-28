@@ -7,6 +7,9 @@ S = "${WORKDIR}/openzwave_${PV}"
 
 SRC_URI = "file://openzwave_${PV}"
 
+DEPENDS = "udev"
+RDEPENS = "udev"
+
 FILES_${PN} = "${libdir} ${bindir} ${sbindir}"
 
 EXTRA_OEMAKE = 'CROSS_COMPILE=${TARGET_PREFIX}'
